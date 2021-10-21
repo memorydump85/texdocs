@@ -1,0 +1,84 @@
+%=======================================================================
+\section{Preliminaries}
+%=======================================================================
+
+\subsection{Lie Groups and Algebras}
+%-----------------------------------------------------------------------
+
+Informally: A Lie algebra is a vector space that is mapped to a group of matrices through an \emph{exponential map}. The elements of the Lie algebra combine using an addition-like operation whereas the elements of the Lie group combine using a multiplication-like operation.
+
+For example, consider the representation of a planar rotations using angles vs. complex numbers with unit absolute value: angle combine additively whereas complex numbers with unit absolute value combine using multiplication. Thus, the exponential map enables us to work with Lie group elements via the corresponding Lie algebra elements, as the algebra can be represented as a vector space and is thus amenable to vector algebraic methods.
+
+% BELOW MAYBE WRONG
+% Once again, informally: Given a Lie algebra, \(\mathfrak{a}\), and its corresponding Lie group, \(\mathbb{G}\), two elements \(\mathbf{u}, \mathbf{v} \in \mathfrak{a}\), and their corresponding \(\mathbf{U}, \mathbf{V} \in \mathbb{G}\):
+% \begin{align*}
+%     \mathbf{U} &= \exp(\mathbf{u})&                                        \mathbf{u} &= \log(\mathbf{U}) \\
+%     \mathbf{V} &= \exp(\mathbf{v})&                                        \mathbf{v} &= \log(\mathbf{V}) \\
+%     \mathbf{U\times V} &= \exp(\mathbf{u}) \times \exp(\mathbf{v})&        \mathbf{u+v} &= \log(\mathbf{U}) + \log(\mathbf{V}) \\
+%                        &= \exp(\mathbf{u + v})&                                         &= \log(\mathbf{U \times V})
+% \end{align*}
+% for appropriate definitions of \(\exp\) and \(\log\), which are analogous to exponentiation and logarithms on the real numbers.
+
+\subsection{The Special Linear Group and Algebra}
+%-----------------------------------------------------------------------
+
+A planar perspective homography, \(\mathbf{H}\), is represented using a \(3\times 3\) matrix from the Special Linear Group, \(\mathbb{SL}(3)\):
+\[
+    \mathbf{H}\in\mathbb{SL}(3)\implies\det(\mathbf{H})=1
+\]
+Thus, the elements of \(\mathbb{SL}(3)\) have only \(8\) free parameters due to the constraint on the determinant.
+
+The Lie group \(\mathbb{SL}(3)\) has a corresponding lie alegbra, the special linear Lie algebra, \(\mathfrak{sl}(3)\), which contains all matrices with zero trace:
+\[
+    \mathbf{h}\in\mathfrak{sl}(3)\implies\text{trace}(\mathbf{h})=0
+\]
+
+The elements of \(\mathfrak{sl}(3)\) form a a vector space. To define this vector space we must first define the generators or basis of this space. Let the operator \(^{\wedge}\) denote the lifting/reshaping of a vector, \(\mathbf{v\in\mathbb{R}^{9}}\), into a \(3\times3\) matrix. Then, we define the generators for this algebra, \(\mathbf{h}_{0}\dotsc\mathbf{h}_{7}\), as:
+\begin{align*}
+    &\mathbf{h}_{0}^{\wedge}&=&\begin{bmatrix}0 & +1 & 0\\
+                                            0 & 0 & 0\\
+                                            0 & 0 & 0      \end{bmatrix}&\ \
+    &\mathbf{h}_{1}^{\wedge}&=&\begin{bmatrix}0 & 0 & +1\\
+                                            0 & 0 & 0\\
+                                            0 & 0 & 0      \end{bmatrix}&\ \
+    &\mathbf{h}_{2}^{\wedge}&=&\begin{bmatrix}0 & 0 & 0\\
+                                            0 & 0 & +1\\
+                                            0 & 0 & 0      \end{bmatrix}&\ \
+    &\mathbf{h}_{3}^{\wedge}&=&\begin{bmatrix}+1 & 0 & 0\\
+                                            0 & -1 & 0\\
+                                            0 & 0 & 0      \end{bmatrix}&
+    \\
+    &\mathbf{h}_{4}^{\wedge}&=&\begin{bmatrix}0 & 0 & 0\\
+                                            0 & -1 & 0\\
+                                            0 & 0 & +1      \end{bmatrix}&\ \
+    &\mathbf{h}_{5}^{\wedge}&=&\begin{bmatrix}0 & 0 & 0\\
+                                            +1 & 0 & 0\\
+                                            0 & 0 & 0      \end{bmatrix}&\ \
+    &\mathbf{h}_{6}^{\wedge}&=&\begin{bmatrix}0 & 0 & 0\\
+                                            0 & 0 & 0\\
+                                            +1 & 0 & 0      \end{bmatrix}&\ \
+    &\mathbf{h}_{7}^{\wedge}&=&\begin{bmatrix}0 & 0 & 0\\
+                                            0 & 0 & 0\\
+                                            0 & +1 & 0      \end{bmatrix}&
+\end{align*}
+Given the above generator elements, which form an orthogonal basis, any element of this algebra can be represented by a unique vector, \(\mathbf{a}\in\mathbb{R}^{8}\), containing the cofficients used to linearly combine the generator elements:
+\[
+    \mathbf{h}=\sum_{i=0}^{7}a_{i}\mathbf{h}_{i}
+\]
+
+Analogous to any other Lie algebra and its corresponding Lie group, each element of \(\mathfrak{sl}(3)\) can be transformed to its corresponding element in \(\mathbb{SL}(3)\) via the exponential map:
+\[
+    \text{Exp}(\mathbf{h}):=\
+    \exp(\mathbf{h}^{\wedge})=\
+    \mathbf{I}+\mathbf{h}^{\wedge}+\frac{1}{2!}(\mathbf{h}^{\wedge})^{2}+\frac{1}{3!}(\mathbf{h}^{\wedge})^{3}+\frac{1}{4!}(\mathbf{h}^{\wedge})^{4}+\cdots
+\]
+Unlike many other Lie algebras, there is no closed for expression for evaluating the matrix exponential above and it must be evaluated numerically. For example, python provides \emph{scipy.linalg.expm} and the C++ \emph{Eigen} library provides the \emph{MatrixBase::exp} method. See \cite{ways19_moler} for a detailed list of methods for computing the matrix exponential.
+
+% Analogous to the exponential map above, the logarithmic map can be
+% used to find the element \(\mathfrak{\mathbf{h}\in sl}(3)\) that corresponds
+% to a given element \(\mathbf{H}\in\mathbb{SL}(3)\):
+% \[
+%     \mathbf{H}=\exp(\mathbf{h}^{\wedge})\implies\mathbf{h}=\log(\mathbf{H})^{\vee}
+% \]
+% where \(^{\vee}\) is the inverse of the \(^{\wedge}\) operator: it flattens
+% a matrix in \(\mathbb{R}^{3\times3}\) into a vector in \(\mathbb{R}^{9}\).
